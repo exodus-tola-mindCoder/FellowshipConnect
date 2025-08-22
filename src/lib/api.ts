@@ -31,4 +31,15 @@ api.interceptors.response.use(
   }
 );
 
+// Ensure admin-specific API calls are handled
+export const fetchAdminData = async () => {
+  try {
+    const response = await api.get('/admin/data');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching admin data:', error);
+    throw error;
+  }
+};
+
 export default api;

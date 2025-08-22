@@ -26,6 +26,7 @@ interface AuthContextType {
   register: (userData: any) => Promise<void>;
   logout: () => void;
   updateUser: (userData: Partial<User>) => void;
+  isAdmin: () => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -129,7 +130,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     try {
       const response = await axios.post('/api/auth/login', { email, password });
       const { user, token } = response.data;
-      
+
       localStorage.setItem('token', token);
       dispatch({ type: 'LOGIN_SUCCESS', payload: { user, token } });
     } catch (error: any) {
@@ -143,7 +144,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     try {
       const response = await axios.post('/api/auth/register', userData);
       const { user, token } = response.data;
-      
+
       localStorage.setItem('token', token);
       dispatch({ type: 'LOGIN_SUCCESS', payload: { user, token } });
     } catch (error: any) {
@@ -164,8 +165,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  // Add a utility function to check if the user is an admin
+  const isAdmin = () => {
+    return state.user?.role === 'admin';
+  };
+
   return (
-    <AuthContext.Provider value={{ state, login, register, logout, updateUser }}>
+    <AuthContext.Provider value={{ state, login, register, logout, updateUser, isAdmin }}>
       {children}
     </AuthContext.Provider>
   );

@@ -71,11 +71,11 @@ const Dashboard: React.FC = () => {
 
       setDailyVerse(verseResponse.data || null);
       setRecentPosts(postsResponse.data?.posts || []);
-      
+
       // Ensure upcomingEvents is always an array
       const eventsData = eventsResponse.data;
-      const eventsArray = Array.isArray(eventsData) 
-        ? eventsData 
+      const eventsArray = Array.isArray(eventsData)
+        ? eventsData
         : (eventsData as { events?: UpcomingEvent[] })?.events || [];
       setUpcomingEvents(eventsArray.slice(0, 3) || []);
     } catch (error) {
@@ -183,12 +183,19 @@ const Dashboard: React.FC = () => {
               {recentPosts.map((post) => (
                 <div key={post._id} className="flex items-start space-x-4 p-4 hover:bg-gray-50 rounded-lg transition-colors">
                   <div className="flex-shrink-0">
-                    {post.author.profilePhoto ? (
-                      <img
-                        src={post.author.profilePhoto}
-                        alt={post.author.name}
-                        className="w-10 h-10 rounded-full object-cover"
-                      />
+                    {/* Add null checks for `post.author` and `post.author.profilePhoto` */}
+                    {post.author ? (
+                      post.author.profilePhoto ? (
+                        <img
+                          src={post.author.profilePhoto}
+                          alt={post.author.name || 'Unknown Author'}
+                          className="w-10 h-10 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                          <Users className="w-5 h-5 text-blue-600" />
+                        </div>
+                      )
                     ) : (
                       <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                         <Users className="w-5 h-5 text-blue-600" />
@@ -205,7 +212,7 @@ const Dashboard: React.FC = () => {
                       </span>
                     </div>
                     <h3 className="text-sm font-medium text-gray-900 truncate">{post.title}</h3>
-                    <p className="text-sm text-gray-600">by {post.author.name}</p>
+                    <p className="text-sm text-gray-600">by {post.author?.name || 'Unknown Author'}</p>
                     <div className="flex items-center space-x-4 mt-2 text-xs text-gray-500">
                       <span className="flex items-center">
                         <Heart className="w-3 h-3 mr-1" />

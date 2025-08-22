@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useLocation } from 'react-router-dom';
-import { 
-  Heart, 
-  MessageCircle, 
-  Send, 
+import {
+  Heart,
+  MessageCircle,
+  Send,
   Filter,
   Plus,
   User,
@@ -84,7 +84,7 @@ const PostList: React.FC = () => {
           const isLiked = post.likes.includes(state.user!._id);
           return {
             ...post,
-            likes: isLiked 
+            likes: isLiked
               ? post.likes.filter(id => id !== state.user!._id)
               : [...post.likes, state.user!._id]
           };
@@ -175,17 +175,17 @@ const PostList: React.FC = () => {
     return state.user?.role === 'admin' || post.author._id === state.user?._id;
   };
 
-  const filterOptions = isPrayerWall 
+  const filterOptions = isPrayerWall
     ? [{ value: 'prayer', label: 'Prayer Requests' }]
     : [
-        { value: 'all', label: 'All Posts' },
-        { value: 'prayer', label: 'Prayer Requests' },
-        { value: 'testimony', label: 'Testimonies' },
-        { value: 'announcement', label: 'Announcements' }
-      ];
+      { value: 'all', label: 'All Posts' },
+      { value: 'prayer', label: 'Prayer Requests' },
+      { value: 'testimony', label: 'Testimonies' },
+      { value: 'announcement', label: 'Announcements' }
+    ];
 
   const pageTitle = isPrayerWall ? 'Prayer Wall' : 'Fellowship Posts';
-  const pageDescription = isPrayerWall 
+  const pageDescription = isPrayerWall
     ? 'Share your prayer requests and pray for others'
     : 'Share your heart with the community';
 
@@ -215,11 +215,10 @@ const PostList: React.FC = () => {
               <button
                 key={option.value}
                 onClick={() => setFilteredType(option.value)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  filteredType === option.value
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filteredType === option.value
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
               >
                 {option.label}
               </button>
@@ -253,12 +252,19 @@ const PostList: React.FC = () => {
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-start space-x-4">
                     <div className="flex-shrink-0">
-                      {!post.isAnonymous && post.author.profilePhoto ? (
-                        <img
-                          src={post.author.profilePhoto}
-                          alt={post.author.name}
-                          className="w-12 h-12 rounded-full object-cover"
-                        />
+                      {/* Add null checks for `post.author` and `post.author.name` */}
+                      {!post.isAnonymous && post.author ? (
+                        post.author.profilePhoto ? (
+                          <img
+                            src={post.author.profilePhoto}
+                            alt={post.author.name || 'Unknown Author'}
+                            className="w-12 h-12 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+                            <User className="w-6 h-6 text-gray-500" />
+                          </div>
+                        )
                       ) : (
                         <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
                           <User className="w-6 h-6 text-gray-500" />
@@ -279,7 +285,7 @@ const PostList: React.FC = () => {
                       </p>
                     </div>
                   </div>
-                  
+
                   {canManagePost(post) && (
                     <div className="flex space-x-2">
                       <button
@@ -296,7 +302,7 @@ const PostList: React.FC = () => {
                 <div className="mb-4">
                   <h2 className="text-xl font-semibold text-gray-900 mb-3">{post.title}</h2>
                   <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{post.content}</p>
-                  
+
                   {post.mediaUrl && (
                     <div className="mt-4">
                       <img
@@ -312,11 +318,10 @@ const PostList: React.FC = () => {
                 <div className="flex items-center space-x-6 pt-4 border-t border-gray-100">
                   <button
                     onClick={() => handleLike(post._id)}
-                    className={`flex items-center space-x-2 transition-colors ${
-                      post.likes.includes(state.user!._id)
-                        ? 'text-red-600'
-                        : 'text-gray-500 hover:text-red-600'
-                    }`}
+                    className={`flex items-center space-x-2 transition-colors ${post.likes.includes(state.user!._id)
+                      ? 'text-red-600'
+                      : 'text-gray-500 hover:text-red-600'
+                      }`}
                   >
                     <Heart className={`w-5 h-5 ${post.likes.includes(state.user!._id) ? 'fill-current' : ''}`} />
                     <span className="text-sm font-medium">{post.likes.length}</span>
@@ -325,11 +330,10 @@ const PostList: React.FC = () => {
                   {(post.type === 'prayer' || isPrayerWall) && (
                     <button
                       onClick={() => handlePray(post._id)}
-                      className={`flex items-center space-x-2 transition-colors ${
-                        post.prayedFor.includes(state.user!._id)
-                          ? 'text-purple-600'
-                          : 'text-gray-500 hover:text-purple-600'
-                      }`}
+                      className={`flex items-center space-x-2 transition-colors ${post.prayedFor.includes(state.user!._id)
+                        ? 'text-purple-600'
+                        : 'text-gray-500 hover:text-purple-600'
+                        }`}
                     >
                       <span className="text-sm">🙏</span>
                       <span className="text-sm font-medium">{post.prayedFor.length} prayed</span>
@@ -391,10 +395,10 @@ const PostList: React.FC = () => {
                     {post.comments.map((comment) => (
                       <div key={comment._id} className="flex space-x-3">
                         <div className="flex-shrink-0">
-                          {comment.user.profilePhoto ? (
+                          {comment.user?.profilePhoto ? (
                             <img
                               src={comment.user.profilePhoto}
-                              alt={comment.user.name}
+                              alt={comment.user?.name || 'Unknown User'}
                               className="w-8 h-8 rounded-full object-cover"
                             />
                           ) : (
@@ -406,12 +410,12 @@ const PostList: React.FC = () => {
                         <div className="flex-1">
                           <div className="bg-white rounded-lg px-4 py-2 shadow-sm">
                             <div className="flex items-center space-x-2 mb-1">
-                              <span className="font-medium text-sm text-gray-900">{comment.user.name}</span>
+                              <span className="font-medium text-sm text-gray-900">{comment.user?.name || 'Unknown User'}</span>
                               <span className="text-xs text-gray-500">
-                                {format(new Date(comment.createdAt), 'MMM d, h:mm a')}
+                                {comment.createdAt ? format(new Date(comment.createdAt), 'MMM d, h:mm a') : 'Unknown Date'}
                               </span>
                             </div>
-                            <p className="text-sm text-gray-700">{comment.content}</p>
+                            <p className="text-sm text-gray-700">{comment.content || 'No content available'}</p>
                           </div>
                         </div>
                       </div>
@@ -431,7 +435,7 @@ const PostList: React.FC = () => {
                 {isPrayerWall ? 'No prayer requests yet' : 'No posts yet'}
               </h3>
               <p className="text-gray-500 mb-6">
-                {isPrayerWall 
+                {isPrayerWall
                   ? 'Be the first to share a prayer request!'
                   : 'Be the first to share with the fellowship!'
                 }
