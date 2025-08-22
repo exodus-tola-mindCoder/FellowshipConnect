@@ -144,7 +144,7 @@ const PostList: React.FC = () => {
 
     try {
       await axios.delete(`/api/posts/${postId}`);
-      setPosts(posts.filter(post => post._id !== postId));
+      setPosts(posts.filter(post => post?._id !== postId));
       toast.success('Post deleted successfully');
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Failed to delete post');
@@ -172,7 +172,7 @@ const PostList: React.FC = () => {
   };
 
   const canManagePost = (post: Post) => {
-    return state.user?.role === 'admin' || post.author._id === state.user?._id;
+    return state.user?.role === 'admin' || post.author?._id === state.user?._id;
   };
 
   const filterOptions = isPrayerWall
@@ -256,8 +256,8 @@ const PostList: React.FC = () => {
                       {!post.isAnonymous && post.author ? (
                         post.author.profilePhoto ? (
                           <img
-                            src={post.author.profilePhoto}
-                            alt={post.author.name || 'Unknown Author'}
+                            src={post.author?.profilePhoto}
+                            alt={post.author?.name ?? 'Unknown Author'}
                             className="w-12 h-12 rounded-full object-cover"
                           />
                         ) : (
@@ -274,14 +274,15 @@ const PostList: React.FC = () => {
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-1">
                         <h3 className="font-semibold text-gray-900">
-                          {post.isAnonymous ? 'Anonymous' : post.author.name}
+                          {post.isAnonymous ? 'Anonymous' : post.author?.name ?? 'unknown Author'}
+                          {/* console.log('autor name', post.isAnonymous ? 'Anonymous' : post.author.name) */}
                         </h3>
                         <span className={`px-3 py-1 text-xs font-medium rounded-full border ${getPostTypeColor(post.type)}`}>
                           {post.type.charAt(0).toUpperCase() + post.type.slice(1)}
                         </span>
                       </div>
                       <p className="text-sm text-gray-500">
-                        {!post.isAnonymous && post.author.fellowshipRole} • {format(new Date(post.createdAt), 'MMM d, yyyy')}
+                        {!post.isAnonymous && post.author?.fellowshipRole} • {format(new Date(post.createdAt), 'MMM d, yyyy')}
                       </p>
                     </div>
                   </div>
@@ -300,8 +301,8 @@ const PostList: React.FC = () => {
 
                 {/* Post Content */}
                 <div className="mb-4">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-3">{post.title}</h2>
-                  <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{post.content}</p>
+                  <h2 className="text-xl font-semibold text-gray-900 mb-3">{post?.title}</h2>
+                  <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{post?.content}</p>
 
                   {post.mediaUrl && (
                     <div className="mt-4">
@@ -395,10 +396,10 @@ const PostList: React.FC = () => {
                     {post.comments.map((comment) => (
                       <div key={comment._id} className="flex space-x-3">
                         <div className="flex-shrink-0">
-                          {comment.user?.profilePhoto ? (
+                          {comment.user && comment.user.profilePhoto ? (
                             <img
                               src={comment.user.profilePhoto}
-                              alt={comment.user?.name || 'Unknown User'}
+                              alt={comment.user.name || 'Unknown User'}
                               className="w-8 h-8 rounded-full object-cover"
                             />
                           ) : (

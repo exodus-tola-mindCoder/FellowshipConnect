@@ -2,7 +2,8 @@ import express from 'express';
 import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
 import { authenticate } from '../middleware/auth.js';
-
+import dotenv from 'dotenv'
+dotenv.config()
 const router = express.Router();
 
 // Configure Cloudinary
@@ -12,6 +13,9 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+  console.log('cloudinary APi', process.env.CLOUDINARY_API_KEY),
+  console.log('cloudinary API sectret', process.env.CLOUDINARY_API_SECRET),
+  console.log('cloudinary Name', process.env.CLOUDINARY_CLOUD_NAME)
 // Configure multer for memory storage
 const storage = multer.memoryStorage();
 const upload = multer({
