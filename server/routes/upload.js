@@ -4,6 +4,12 @@ import { v2 as cloudinary } from 'cloudinary';
 import { authenticate } from '../middleware/auth.js';
 import dotenv from 'dotenv'
 dotenv.config()
+
+console.log('Server time (UTC):', new Date().toISOString());
+console.log('Server timestamp (sec):', Math.floor(Date.now() / 1000));
+console.log('cloudinary APi', process.env.CLOUDINARY_API_KEY);
+console.log('cloudinary API sectret', process.env.CLOUDINARY_API_SECRET ? '***' : undefined);
+console.log('cloudinary Name', process.env.CLOUDINARY_CLOUD_NAME);
 const router = express.Router();
 
 // Configure Cloudinary
@@ -104,6 +110,14 @@ router.delete('/image/:publicId', authenticate, async (req, res) => {
   } catch (error) {
     console.error('Delete error:', error);
     res.status(500).json({ message: 'Failed to delete image', error: error.message });
+
+    if (error && error.message && error.message.toLowerCase().includes('stale request')) {
+      return res.status(400).json({
+        message: 'Cloudinary rejected request due to timestamp mismatch. Please sync server clock (NTP) and retry.'
+      });
+    }
+
+    res.status(500).json({ message: 'Failed to upload profile photo', error: error.message });
   }
 });
 

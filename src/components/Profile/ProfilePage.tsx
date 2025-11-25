@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { 
-  User, 
-  Mail, 
-  Calendar, 
-  Edit3, 
-  Save, 
+import {
+  User,
+  Mail,
+  Calendar,
+  Edit3,
+  Save,
   X,
   Camera,
   Lock,
@@ -54,6 +54,32 @@ const ProfilePage: React.FC = () => {
     }
   }, [state.user]);
 
+  // Helper to safely parse various date formats (strings, ms timestamps, sec timestamps)
+  const parseToDate = (value: any): Date | null => {
+    if (!value) return null;
+    try {
+      // If it's a number, it might be seconds (10-digit) or milliseconds (13+ digits)
+      if (typeof value === 'number') {
+        const timestamp = value < 1e12 ? value * 1000 : value;
+        const dt = new Date(timestamp);
+        return Number.isNaN(dt.getTime()) ? null : dt;
+      }
+
+      // If it's a string that contains only digits, treat similarly
+      if (/^\d+$/.test(String(value))) {
+        const n = Number(value);
+        const timestamp = n < 1e12 ? n * 1000 : n;
+        const dt = new Date(timestamp);
+        return Number.isNaN(dt.getTime()) ? null : dt;
+      }
+
+      const dt = new Date(value);
+      return Number.isNaN(dt.getTime()) ? null : dt;
+    } catch (err) {
+      return null;
+    }
+  };
+
   const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setProfileData(prev => ({
@@ -87,9 +113,19 @@ const ProfilePage: React.FC = () => {
       const response = await axios.post('/api/upload/profile-photo', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-
-      setProfileData(prev => ({ ...prev, profilePhoto: response.data.url }));
-      toast.success('Profile photo uploaded successfully!');
+      // Persist the new profile photo immediately by updating the user profile on the server
+      try {
+        const updateResp = await axios.put('/api/users/profile', { profilePhoto: response.data.url });
+        // update global auth state so other parts of the app see the new photo
+        updateUser(updateResp.data.user);
+        // update local form state
+        setProfileData(prev => ({ ...prev, profilePhoto: updateResp.data.user.profilePhoto }));
+        toast.success('Profile photo uploaded and saved successfully!');
+      } catch (err: any) {
+        // If saving fails, still show the uploaded preview but notify the user
+        setProfileData(prev => ({ ...prev, profilePhoto: response.data.url }));
+        toast.error(err.response?.data?.message || 'Uploaded but failed to save profile photo');
+      }
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Failed to upload photo');
     } finally {
@@ -138,7 +174,7 @@ const ProfilePage: React.FC = () => {
         currentPassword: passwordData.currentPassword,
         newPassword: passwordData.newPassword
       });
-      
+
       toast.success('Password changed successfully!');
       setIsChangingPassword(false);
       setPasswordData({
@@ -181,6 +217,9 @@ const ProfilePage: React.FC = () => {
     );
   }
 
+  // Safely compute joined date for display (guard against invalid/missing values)
+  const joinedDate = parseToDate(state.user.joinDate ?? state.user.createdAt);
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       {/* Header */}
@@ -207,7 +246,7 @@ const ProfilePage: React.FC = () => {
                     <User className="w-16 h-16 text-blue-600" />
                   </div>
                 )}
-                
+
                 {/* Photo Upload Button */}
                 <label className="absolute bottom-0 right-0 bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors cursor-pointer">
                   {isUploadingPhoto ? (
@@ -227,13 +266,12 @@ const ProfilePage: React.FC = () => {
               <h2 className="text-xl font-bold text-gray-900 mt-4">{profileData.name}</h2>
               <p className="text-gray-600">{profileData.fellowshipRole}</p>
               <div className="flex items-center justify-center space-x-2 mt-2">
-                <span className={`px-3 py-1 text-xs font-medium rounded-full ${
-                  state.user.role === 'admin' 
-                    ? 'bg-yellow-100 text-yellow-800'
-                    : state.user.role === 'leader'
+                <span className={`px-3 py-1 text-xs font-medium rounded-full ${state.user.role === 'admin'
+                  ? 'bg-yellow-100 text-yellow-800'
+                  : state.user.role === 'leader'
                     ? 'bg-blue-100 text-blue-800'
                     : 'bg-gray-100 text-gray-800'
-                }`}>
+                  }`}>
                   {state.user.role.charAt(0).toUpperCase() + state.user.role.slice(1)}
                 </span>
               </div>
@@ -247,7 +285,7 @@ const ProfilePage: React.FC = () => {
               </div>
               <div className="flex items-center text-gray-600">
                 <Calendar className="w-4 h-4 mr-3" />
-                <span>Joined {format(new Date(state.user.joinDate || state.user.createdAt), 'MMMM yyyy')}</span>
+                <span>Joined {joinedDate ? format(joinedDate, 'MMMM yyyy') : 'Unknown'}</span>
               </div>
             </div>
           </div>
