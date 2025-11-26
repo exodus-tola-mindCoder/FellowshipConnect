@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { 
-  Heart, 
-  Calendar, 
-  BookOpen, 
-  Users, 
-  Shield, 
+import {
+  Heart,
+  Calendar,
+  BookOpen,
+  Users,
+  Shield,
   Settings,
   LogOut,
   Menu,
@@ -63,7 +63,7 @@ const Navbar: React.FC = () => {
     { path: '/admin', icon: Shield, label: 'Admin', roles: ['admin'] }
   ];
 
-  const filteredNavItems = navItems.filter(item => 
+  const filteredNavItems = navItems.filter(item =>
     state.user && item.roles.includes(state.user.role)
   );
 
@@ -76,8 +76,8 @@ const Navbar: React.FC = () => {
               <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
                 <Heart className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold text-gray-900 hidden sm:block">Fellowship Connect</span>
-              <span className="text-xl font-bold text-gray-900 sm:hidden">FC</span>
+              <span className="text-xl font-bold text-gray-900 hidden sm:block">MFM_CSF PLATFORM</span>
+              <span className="text-xl font-bold text-gray-900 sm:hidden">MFM-CSF</span>
             </Link>
           </div>
 
@@ -90,11 +90,10 @@ const Navbar: React.FC = () => {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    isActive
+                  className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive
                       ? 'text-blue-600 bg-blue-50'
                       : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
-                  }`}
+                    }`}
                 >
                   <Icon className="w-4 h-4" />
                   <span>{item.label}</span>
@@ -118,9 +117,9 @@ const Navbar: React.FC = () => {
                   </span>
                 )}
               </button>
-              <NotificationDropdown 
-                isOpen={showNotifications} 
-                onClose={() => setShowNotifications(false)} 
+              <NotificationDropdown
+                isOpen={showNotifications}
+                onClose={() => setShowNotifications(false)}
               />
             </div>
 
@@ -140,7 +139,7 @@ const Navbar: React.FC = () => {
                 )}
                 <span className="text-sm font-medium max-w-32 truncate">{state.user?.name}</span>
               </button>
-              
+
               {/* Dropdown Menu */}
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                 <Link
@@ -188,9 +187,9 @@ const Navbar: React.FC = () => {
                   </span>
                 )}
               </button>
-              <NotificationDropdown 
-                isOpen={showNotifications} 
-                onClose={() => setShowNotifications(false)} 
+              <NotificationDropdown
+                isOpen={showNotifications}
+                onClose={() => setShowNotifications(false)}
               />
             </div>
 
@@ -215,11 +214,10 @@ const Navbar: React.FC = () => {
                     key={item.path}
                     to={item.path}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                      isActive
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${isActive
                         ? 'text-blue-600 bg-blue-50'
                         : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
-                    }`}
+                      }`}
                   >
                     <Icon className="w-4 h-4" />
                     <span>{item.label}</span>
