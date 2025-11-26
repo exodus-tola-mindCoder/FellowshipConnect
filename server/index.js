@@ -9,6 +9,7 @@ import { Server } from 'socket.io';
 
 // Routes
 import authRoutes from './routes/auth.js';
+import spiritualTrackerRoutes from './routes/spiritualTracker.js';
 import userRoutes from './routes/users.js';
 import postRoutes from './routes/posts.js';
 import eventRoutes from './routes/events.js';
@@ -86,6 +87,7 @@ app.get('/api/health', (req, res) => {
 
 // API Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/spiritual-tracker', spiritualTrackerRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/events', eventRoutes);

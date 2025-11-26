@@ -23,6 +23,8 @@ interface Post {
   title: string;
   content: string;
   type: 'prayer' | 'testimony' | 'announcement';
+  testimonyCategory?: 'Healing' | 'Provision' | 'Breakthrough' | 'Spiritual Growth' | 'Deliverance' | 'Other';
+  amenReactions?: string[];
   author: {
     _id: string;
     name: string;
@@ -51,6 +53,9 @@ const PostList: React.FC = () => {
   const location = useLocation();
   const [posts, setPosts] = useState<Post[]>([]);
   const [filteredType, setFilteredType] = useState('all');
+  const [category, setCategory] = useState<string>('');
+  const [sort, setSort] = useState<'newest' | 'oldest' | 'category'>('newest');
+  const [q, setQ] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [commentInputs, setCommentInputs] = useState<{ [key: string]: string }>({});
@@ -61,13 +66,18 @@ const PostList: React.FC = () => {
 
   useEffect(() => {
     fetchPosts();
-  }, [filteredType, isPrayerWall]);
+  }, [filteredType, category, sort, q, isPrayerWall]);
 
   const fetchPosts = async () => {
     try {
       setIsLoading(true);
       const typeParam = isPrayerWall ? 'prayer' : filteredType;
-      const response = await axios.get(`/api/posts?type=${typeParam}`);
+      const params = new URLSearchParams();
+      params.set('type', typeParam);
+      if (category) params.set('category', category);
+      if (sort) params.set('sort', sort);
+      if (q) params.set('q', q);
+      const response = await axios.get(`/api/posts?${params.toString()}`);
       setPosts(response.data.posts);
     } catch (error) {
       toast.error('Failed to fetch posts');
@@ -208,21 +218,58 @@ const PostList: React.FC = () => {
 
       {/* Filter */}
       {!isPrayerWall && (
-        <div className="flex items-center space-x-4 mb-8">
-          <Filter className="w-5 h-5 text-gray-500" />
-          <div className="flex space-x-2">
-            {filterOptions.map((option) => (
-              <button
-                key={option.value}
-                onClick={() => setFilteredType(option.value)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filteredType === option.value
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-              >
-                {option.label}
-              </button>
-            ))}
+        <div className="space-y-4 mb-8">
+          <div className="flex items-center space-x-4">
+            <Filter className="w-5 h-5 text-gray-500" />
+            <div className="flex space-x-2">
+              {filterOptions.map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => setFilteredType(option.value)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filteredType === option.value
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Search, Category, Sort Controls */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <input
+              type="text"
+              placeholder="Search testimonies and posts..."
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+            >
+              <option value="">All Categories</option>
+              <option value="Healing">Healing</option>
+              <option value="Provision">Provision</option>
+              <option value="Breakthrough">Breakthrough</option>
+              <option value="Spiritual Growth">Spiritual Growth</option>
+              <option value="Deliverance">Deliverance</option>
+              <option value="Other">Other</option>
+            </select>
+
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value as any)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="newest">Newest</option>
+              <option value="oldest">Oldest</option>
+              <option value="category">Category (A-Z)</option>
+            </select>
           </div>
         </div>
       )}
@@ -280,6 +327,11 @@ const PostList: React.FC = () => {
                         <span className={`px-3 py-1 text-xs font-medium rounded-full border ${getPostTypeColor(post.type)}`}>
                           {post.type.charAt(0).toUpperCase() + post.type.slice(1)}
                         </span>
+                        {post.type === 'testimony' && post.testimonyCategory && (
+                          <span className="px-3 py-1 text-xs font-medium rounded-full border bg-yellow-50 text-yellow-700 border-yellow-200">
+                            {post.testimonyCategory}
+                          </span>
+                        )}
                       </div>
                       <p className="text-sm text-gray-500">
                         {!post.isAnonymous && post.author?.fellowshipRole} • {format(new Date(post.createdAt), 'MMM d, yyyy')}
@@ -327,6 +379,31 @@ const PostList: React.FC = () => {
                     <Heart className={`w-5 h-5 ${post.likes.includes(state.user!._id) ? 'fill-current' : ''}`} />
                     <span className="text-sm font-medium">{post.likes.length}</span>
                   </button>
+
+                  {post.type === 'testimony' && (
+                    <button
+                      onClick={async () => {
+                        try {
+                          const res = await axios.post(`/api/posts/${post._id}/amen`);
+                          setPosts(posts.map(p => p._id === post._id ? {
+                            ...p,
+                            amenReactions: p.amenReactions?.includes(state.user!._id)
+                              ? p.amenReactions!.filter(id => id !== state.user!._id)
+                              : [...(p.amenReactions || []), state.user!._id]
+                          } : p));
+                        } catch {
+                          toast.error('Failed to react');
+                        }
+                      }}
+                      className={`flex items-center space-x-2 transition-colors ${post.amenReactions?.includes(state.user!._id)
+                        ? 'text-green-600'
+                        : 'text-gray-500 hover:text-green-600'
+                        }`}
+                    >
+                      <span className="text-sm">Amen</span>
+                      <span className="text-sm font-medium">{post.amenReactions?.length || 0}</span>
+                    </button>
+                  )}
 
                   {(post.type === 'prayer' || isPrayerWall) && (
                     <button

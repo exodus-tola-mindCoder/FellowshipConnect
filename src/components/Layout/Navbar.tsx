@@ -12,7 +12,8 @@ import {
   Menu,
   X,
   User,
-  Bell
+  Bell,
+  PartyPopper
 } from 'lucide-react';
 import axios from 'axios';
 import NotificationDropdown from './NotificationDropdown';
@@ -51,6 +52,9 @@ const Navbar: React.FC = () => {
   const navItems = [
     { path: '/dashboard', icon: BookOpen, label: 'Dashboard', roles: ['member', 'leader', 'admin'] },
     { path: '/posts', icon: Heart, label: 'Posts', roles: ['member', 'leader', 'admin'] },
+    { path: '/testimonies', icon: BookOpen, label: 'Testimonies', roles: ['member', 'leader', 'admin'] },
+    { path: '/celebrations', icon: PartyPopper, label: 'Celebrations', roles: ['member', 'leader', 'admin'] },
+    { path: '/spiritual-tracker', icon: BookOpen, label: 'Spiritual Tracker', roles: ['member', 'leader', 'admin'] },
     { path: '/prayer-wall', icon: Heart, label: 'Prayer Wall', roles: ['member', 'leader', 'admin'] },
     { path: '/events', icon: Calendar, label: 'Events', roles: ['member', 'leader', 'admin'] },
     { path: '/members', icon: Users, label: 'Members', roles: ['leader', 'admin'] },

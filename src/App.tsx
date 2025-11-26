@@ -9,12 +9,15 @@ import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 import Dashboard from './components/Dashboard/Dashboard';
 import PostList from './components/Posts/PostList';
+import TestimonyArchive from './components/Posts/TestimonyArchive';
 import EventList from './components/Events/EventList';
+import CelebrationsPage from './components/Celebrations/CelebrationsPage';
 import MembersList from './components/Members/MembersList';
 import ProfilePage from './components/Profile/ProfilePage';
 import AdminDashboard from './components/Admin/AdminDashboard';
 import NotificationsPage from './components/Notifications/NotificationsPage';
 import PrayerTracker from './components/Prayer/PrayerTracker';
+import SpiritualTrackerPage from './components/SpiritualTracker/SpiritualTrackerPage';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -79,13 +82,16 @@ function App() {
               <Route index element={<Navigate to="/dashboard" />} />
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="posts" element={<PostList />} />
+              <Route path="testimonies" element={<TestimonyArchive />} />
               <Route path="prayer-wall" element={<PostList />} />
+              <Route path="celebrations" element={<CelebrationsPage />} />
               <Route path="prayer-tracker" element={<PrayerTracker />} />
               <Route path="events" element={<EventList />} />
               <Route path="members" element={<MembersList />} />
               <Route path="admin" element={<AdminDashboard />} />
               <Route path="profile" element={<ProfilePage />} />
               <Route path="notifications" element={<NotificationsPage />} />
+              <Route path="spiritual-tracker" element={<SpiritualTrackerPage />} />
             </Route>
           </Routes>
           

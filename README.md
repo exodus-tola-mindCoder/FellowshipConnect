@@ -12,6 +12,7 @@ A beautiful, modern Christian university fellowship community platform built wit
 - **Prayer Wall**: Dedicated space for prayer requests with anonymous posting
 - **Admin Dashboard**: User management and content moderation
 - **Mobile Responsive**: Beautiful design that works on all devices
+- **Testimony Categories & Archive**: Members can share testimonies with categories (Healing, Provision, Breakthrough, Spiritual Growth, Deliverance, Other), optional anonymity, photos, and reactions like “Amen.” Includes search, category filters, sort by date or category, and a dedicated archive page for easy browsing.
 
 ## 🚀 Tech Stack
 
@@ -133,6 +134,9 @@ The `vercel.json` configuration handles both frontend and backend deployment.
 1. **Register**: Create an account with your fellowship role
 2. **Dashboard**: View daily scripture and recent activity
 3. **Posts**: Share prayer requests, testimonies, and announcements
+   - For testimonies, choose a category and optionally post anonymously or add a photo
+   - React to testimonies with “Amen,” search and filter by category, or sort
+   - Browse all testimonies in the new Testimony Archive (in the navbar or at /testimonies)
 4. **Prayer Wall**: Pray for others and share anonymous requests
 5. **Events**: Stay updated on fellowship activities
 6. **Profile**: Customize your profile and settings

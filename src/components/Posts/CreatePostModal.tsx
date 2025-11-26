@@ -23,7 +23,8 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
     content: '',
     type: defaultType || 'prayer' as 'prayer' | 'testimony' | 'announcement',
     isAnonymous: false,
-    mediaUrl: ''
+    mediaUrl: '',
+    testimonyCategory: '' as '' | 'Healing' | 'Provision' | 'Breakthrough' | 'Spiritual Growth' | 'Deliverance' | 'Other'
   });
   const [mentions, setMentions] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -80,6 +81,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
     try {
       const postData = {
         ...formData,
+        testimonyCategory: formData.type === 'testimony' ? formData.testimonyCategory : undefined,
         mentions: mentions.map(m => m._id)
       };
       
@@ -92,6 +94,15 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
       setIsLoading(false);
     }
   };
+
+  const categories = [
+    'Healing',
+    'Provision',
+    'Breakthrough',
+    'Spiritual Growth',
+    'Deliverance',
+    'Other'
+  ];
 
   const postTypes = [
     {
@@ -115,6 +126,8 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
       description: 'Share news or updates with the community',
       color: 'text-blue-600 bg-blue-50 border-blue-200'
     }
+    // Note: Celebrations have a dedicated page and composer, so we intentionally
+    // do not add it here to keep posts separate from celebrations.
   ];
 
   return (
@@ -172,6 +185,27 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
                   );
                 })}
               </div>
+            </div>
+          )}
+
+          {/* Testimony Category */}
+          {formData.type === 'testimony' && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Category *
+              </label>
+              <select
+                name="testimonyCategory"
+                value={formData.testimonyCategory}
+                onChange={handleChange}
+                required={formData.type === 'testimony'}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all"
+              >
+                <option value="" disabled>Select a category</option>
+                {categories.map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
             </div>
           )}
 
