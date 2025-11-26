@@ -17,6 +17,7 @@ import scriptureRoutes from './routes/scripture.js';
 import adminRoutes from './routes/admin.js';
 import uploadRoutes from './routes/upload.js';
 import notificationRoutes from './routes/notifications.js';
+import mentorshipRoutes from './routes/mentorship.js';
 import prayerRoutes from './routes/prayers.js';
 
 dotenv.config();
@@ -95,6 +96,7 @@ app.use('/api/scripture', scriptureRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/mentorship', mentorshipRoutes);
 app.use('/api/prayers', prayerRoutes);
 
 // Serve static files from the React app build directory

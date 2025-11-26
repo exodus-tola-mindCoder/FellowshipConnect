@@ -55,6 +55,8 @@ const Navbar: React.FC = () => {
     { path: '/testimonies', icon: BookOpen, label: 'Testimonies', roles: ['member', 'leader', 'admin'] },
     { path: '/celebrations', icon: PartyPopper, label: 'Celebrations', roles: ['member', 'leader', 'admin'] },
     { path: '/spiritual-tracker', icon: BookOpen, label: 'Spiritual Tracker', roles: ['member', 'leader', 'admin'] },
+    { path: '/mentorship', icon: Heart, label: 'Mentorship', roles: ['member', 'leader', 'admin'] },
+    { path: '/mentorship-admin', icon: Shield, label: 'Mentorship Dashboard', roles: ['leader', 'admin'] },
     { path: '/prayer-wall', icon: Heart, label: 'Prayer Wall', roles: ['member', 'leader', 'admin'] },
     { path: '/events', icon: Calendar, label: 'Events', roles: ['member', 'leader', 'admin'] },
     { path: '/members', icon: Users, label: 'Members', roles: ['leader', 'admin'] },

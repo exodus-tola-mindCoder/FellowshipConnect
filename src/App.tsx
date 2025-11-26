@@ -16,6 +16,8 @@ import MembersList from './components/Members/MembersList';
 import ProfilePage from './components/Profile/ProfilePage';
 import AdminDashboard from './components/Admin/AdminDashboard';
 import NotificationsPage from './components/Notifications/NotificationsPage';
+import MentorshipRequestPage from './components/Mentorship/RequestPage';
+import MentorshipLeaderDashboard from './components/Mentorship/LeaderDashboard';
 import PrayerTracker from './components/Prayer/PrayerTracker';
 import SpiritualTrackerPage from './components/SpiritualTracker/SpiritualTrackerPage';
 
@@ -92,6 +94,8 @@ function App() {
               <Route path="profile" element={<ProfilePage />} />
               <Route path="notifications" element={<NotificationsPage />} />
               <Route path="spiritual-tracker" element={<SpiritualTrackerPage />} />
+              <Route path="mentorship" element={<MentorshipRequestPage />} />
+              <Route path="mentorship-admin" element={<MentorshipLeaderDashboard />} />
             </Route>
           </Routes>
           
