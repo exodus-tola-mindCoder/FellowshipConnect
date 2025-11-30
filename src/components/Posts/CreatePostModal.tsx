@@ -126,8 +126,6 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
       description: 'Share news or updates with the community',
       color: 'text-blue-600 bg-blue-50 border-blue-200'
     }
-    // Note: Celebrations have a dedicated page and composer, so we intentionally
-    // do not add it here to keep posts separate from celebrations.
   ];
 
   return (

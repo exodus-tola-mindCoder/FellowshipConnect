@@ -1,10 +1,16 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900 transition-colors duration-300;
+  }
+  
+  .dark body {
+    @apply bg-dark-900 text-gray-100;
+  }
 }
 
 ::-webkit-scrollbar-track {
@@ -20,18 +26,22 @@
   background: #94a3b8;
 }
 
-/* Mobile optimizations */
 @media (max-width: 768px) {
+
   /* Improve touch targets */
-  button, a, input, textarea, select {
+  button,
+  a,
+  input,
+  textarea,
+  select {
     min-height: 44px;
   }
-  
+
   /* Better spacing on mobile */
   .mobile-spacing {
     padding: 1rem;
   }
-  
+
   /* Responsive text */
   .responsive-text {
     font-size: clamp(0.875rem, 2.5vw, 1rem);
@@ -50,9 +60,12 @@ select:focus-visible {
 
 /* Loading animations */
 @keyframes pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.5;
   }
@@ -195,7 +208,7 @@ select:focus-visible {
   .no-print {
     display: none !important;
   }
-  
+
   body {
     background: white !important;
     color: black !important;
@@ -204,13 +217,16 @@ select:focus-visible {
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
-  button, a {
+
+  button,
+  a {
     border: 2px solid currentColor;
   }
 }
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {

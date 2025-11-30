@@ -8,15 +8,15 @@ import {
   Filter,
   Plus,
   User,
-  Eye,
-  EyeOff,
-  Edit,
-  Trash2
+  Trash2,
+  Search
 } from 'lucide-react';
 import axios from 'axios';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
 import CreatePostModal from './CreatePostModal';
+import Card from '../common/Card';
+import Button from '../common/Button';
 
 interface Post {
   _id: string;
@@ -171,13 +171,13 @@ const PostList: React.FC = () => {
   const getPostTypeColor = (type: string) => {
     switch (type) {
       case 'prayer':
-        return 'bg-purple-100 text-purple-800 border-purple-200';
+        return 'bg-purple-100 text-purple-700 border-purple-200';
       case 'testimony':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+        return 'bg-secondary-100 text-secondary-700 border-secondary-200';
       case 'announcement':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
+        return 'bg-blue-100 text-blue-700 border-blue-200';
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return 'bg-slate-100 text-slate-700 border-slate-200';
     }
   };
 
@@ -200,141 +200,148 @@ const PostList: React.FC = () => {
     : 'Share your heart with the community';
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="max-w-4xl mx-auto px-4 py-8 animate-fade-in-up">
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">{pageTitle}</h1>
-          <p className="text-gray-600 mt-2">{pageDescription}</p>
+          <h1 className="text-3xl font-heading font-bold text-slate-900">{pageTitle}</h1>
+          <p className="text-slate-600 mt-2">{pageDescription}</p>
         </div>
-        <button
+        <Button
+          variant="primary"
           onClick={() => setShowCreateModal(true)}
-          className="flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105"
+          leftIcon={<Plus className="w-5 h-5" />}
+          className="shadow-lg shadow-primary-500/30"
         >
-          <Plus className="w-5 h-5" />
-          <span>{isPrayerWall ? 'Share Prayer Request' : 'Create Post'}</span>
-        </button>
+          {isPrayerWall ? 'Share Prayer Request' : 'Create Post'}
+        </Button>
       </div>
 
       {/* Filter */}
       {!isPrayerWall && (
-        <div className="space-y-4 mb-8">
-          <div className="flex items-center space-x-4">
-            <Filter className="w-5 h-5 text-gray-500" />
-            <div className="flex space-x-2">
-              {filterOptions.map((option) => (
-                <button
-                  key={option.value}
-                  onClick={() => setFilteredType(option.value)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filteredType === option.value
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                >
-                  {option.label}
-                </button>
-              ))}
+        <Card className="mb-8 p-4">
+          <div className="space-y-4">
+            <div className="flex items-center space-x-4 overflow-x-auto pb-2 scrollbar-hide">
+              <Filter className="w-5 h-5 text-slate-400 flex-shrink-0" />
+              <div className="flex space-x-2">
+                {filterOptions.map((option) => (
+                  <button
+                    key={option.value}
+                    onClick={() => setFilteredType(option.value)}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 whitespace-nowrap ${filteredType === option.value
+                      ? 'bg-primary-600 text-white shadow-md shadow-primary-500/20'
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                      }`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Search, Category, Sort Controls */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Search posts..."
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                />
+              </div>
+
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+              >
+                <option value="">All Categories</option>
+                <option value="Healing">Healing</option>
+                <option value="Provision">Provision</option>
+                <option value="Breakthrough">Breakthrough</option>
+                <option value="Spiritual Growth">Spiritual Growth</option>
+                <option value="Deliverance">Deliverance</option>
+                <option value="Other">Other</option>
+              </select>
+
+              <select
+                value={sort}
+                onChange={(e) => setSort(e.target.value as any)}
+                className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+              >
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="category">Category (A-Z)</option>
+              </select>
             </div>
           </div>
-
-          {/* Search, Category, Sort Controls */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <input
-              type="text"
-              placeholder="Search testimonies and posts..."
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
-            >
-              <option value="">All Categories</option>
-              <option value="Healing">Healing</option>
-              <option value="Provision">Provision</option>
-              <option value="Breakthrough">Breakthrough</option>
-              <option value="Spiritual Growth">Spiritual Growth</option>
-              <option value="Deliverance">Deliverance</option>
-              <option value="Other">Other</option>
-            </select>
-
-            <select
-              value={sort}
-              onChange={(e) => setSort(e.target.value as any)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="newest">Newest</option>
-              <option value="oldest">Oldest</option>
-              <option value="category">Category (A-Z)</option>
-            </select>
-          </div>
-        </div>
+        </Card>
       )}
 
       {/* Posts */}
       {isLoading ? (
         <div className="space-y-6">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 animate-pulse">
+            <Card key={i} className="p-6 animate-pulse">
               <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-gray-200 rounded-full"></div>
+                <div className="w-12 h-12 bg-slate-200 rounded-full"></div>
                 <div className="flex-1">
-                  <div className="h-4 bg-gray-200 rounded w-1/3 mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                  <div className="h-4 bg-slate-200 rounded w-1/3 mb-2"></div>
+                  <div className="h-4 bg-slate-200 rounded w-full mb-2"></div>
+                  <div className="h-4 bg-slate-200 rounded w-2/3"></div>
                 </div>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       ) : (
         <div className="space-y-6">
           {posts.map((post) => (
-            <div key={post._id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+            <Card key={post._id} className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
               {/* Post Header */}
               <div className="p-6 pb-4">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-start space-x-4">
                     <div className="flex-shrink-0">
-                      {/* Add null checks for `post.author` and `post.author.name` */}
                       {!post.isAnonymous && post.author ? (
                         post.author.profilePhoto ? (
                           <img
                             src={post.author?.profilePhoto}
                             alt={post.author?.name ?? 'Unknown Author'}
-                            className="w-12 h-12 rounded-full object-cover"
+                            className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm"
                           />
                         ) : (
-                          <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
-                            <User className="w-6 h-6 text-gray-500" />
+                          <div className="w-12 h-12 bg-primary-50 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
+                            <span className="text-primary-600 font-bold text-lg">{post.author?.name?.charAt(0)}</span>
                           </div>
                         )
                       ) : (
-                        <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
-                          <User className="w-6 h-6 text-gray-500" />
+                        <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
+                          <User className="w-6 h-6 text-slate-400" />
                         </div>
                       )}
                     </div>
                     <div className="flex-1">
-                      <div className="flex items-center space-x-3 mb-1">
-                        <h3 className="font-semibold text-gray-900">
-                          {post.isAnonymous ? 'Anonymous' : post.author?.name ?? 'unknown Author'}
-                          {/* console.log('autor name', post.isAnonymous ? 'Anonymous' : post.author.name) */}
+                      <div className="flex flex-wrap items-center gap-2 mb-1">
+                        <h3 className="font-semibold text-slate-900">
+                          {post.isAnonymous ? 'Anonymous' : post.author?.name ?? 'Unknown Author'}
                         </h3>
-                        <span className={`px-3 py-1 text-xs font-medium rounded-full border ${getPostTypeColor(post.type)}`}>
-                          {post.type.charAt(0).toUpperCase() + post.type.slice(1)}
+                        <span className={`px-2.5 py-0.5 text-xs font-semibold rounded-full border ${getPostTypeColor(post.type)}`}>
+                          {post.type}
                         </span>
                         {post.type === 'testimony' && post.testimonyCategory && (
-                          <span className="px-3 py-1 text-xs font-medium rounded-full border bg-yellow-50 text-yellow-700 border-yellow-200">
+                          <span className="px-2.5 py-0.5 text-xs font-medium rounded-full border bg-yellow-50 text-yellow-700 border-yellow-200">
                             {post.testimonyCategory}
                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-gray-500">
-                        {!post.isAnonymous && post.author?.fellowshipRole} • {format(new Date(post.createdAt), 'MMM d, yyyy')}
+                      <p className="text-sm text-slate-500">
+                        {!post.isAnonymous && post.author?.fellowshipRole && (
+                          <span className="font-medium text-slate-600">{post.author.fellowshipRole} • </span>
+                        )}
+                        {format(new Date(post.createdAt), 'MMM d, yyyy')}
                       </p>
                     </div>
                   </div>
@@ -343,7 +350,8 @@ const PostList: React.FC = () => {
                     <div className="flex space-x-2">
                       <button
                         onClick={() => handleDeletePost(post._id)}
-                        className="p-2 text-gray-400 hover:text-red-600 transition-colors"
+                        className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                        title="Delete Post"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -352,31 +360,33 @@ const PostList: React.FC = () => {
                 </div>
 
                 {/* Post Content */}
-                <div className="mb-4">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-3">{post?.title}</h2>
-                  <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{post?.content}</p>
+                <div className="mb-4 pl-16">
+                  <h2 className="text-xl font-heading font-bold text-slate-900 mb-2">{post?.title}</h2>
+                  <p className="text-slate-700 leading-relaxed whitespace-pre-wrap">{post?.content}</p>
 
                   {post.mediaUrl && (
                     <div className="mt-4">
                       <img
                         src={post.mediaUrl}
                         alt="Post media"
-                        className="rounded-lg max-w-full h-auto"
+                        className="rounded-xl max-w-full h-auto shadow-sm border border-slate-100"
                       />
                     </div>
                   )}
                 </div>
 
                 {/* Post Actions */}
-                <div className="flex items-center space-x-6 pt-4 border-t border-gray-100">
+                <div className="flex items-center space-x-6 pt-4 border-t border-slate-100 pl-16">
                   <button
                     onClick={() => handleLike(post._id)}
-                    className={`flex items-center space-x-2 transition-colors ${post.likes.includes(state.user!._id)
-                      ? 'text-red-600'
-                      : 'text-gray-500 hover:text-red-600'
+                    className={`flex items-center space-x-2 transition-colors group ${post.likes.includes(state.user!._id)
+                      ? 'text-red-500'
+                      : 'text-slate-500 hover:text-red-500'
                       }`}
                   >
-                    <Heart className={`w-5 h-5 ${post.likes.includes(state.user!._id) ? 'fill-current' : ''}`} />
+                    <div className={`p-2 rounded-full group-hover:bg-red-50 transition-colors ${post.likes.includes(state.user!._id) ? 'bg-red-50' : ''}`}>
+                      <Heart className={`w-5 h-5 ${post.likes.includes(state.user!._id) ? 'fill-current' : ''}`} />
+                    </div>
                     <span className="text-sm font-medium">{post.likes.length}</span>
                   </button>
 
@@ -395,12 +405,14 @@ const PostList: React.FC = () => {
                           toast.error('Failed to react');
                         }
                       }}
-                      className={`flex items-center space-x-2 transition-colors ${post.amenReactions?.includes(state.user!._id)
+                      className={`flex items-center space-x-2 transition-colors group ${post.amenReactions?.includes(state.user!._id)
                         ? 'text-green-600'
-                        : 'text-gray-500 hover:text-green-600'
+                        : 'text-slate-500 hover:text-green-600'
                         }`}
                     >
-                      <span className="text-sm">Amen</span>
+                      <div className={`px-3 py-1 rounded-full border group-hover:bg-green-50 transition-colors ${post.amenReactions?.includes(state.user!._id) ? 'bg-green-50 border-green-200' : 'border-slate-200'}`}>
+                        <span className="text-sm font-medium">Amen</span>
+                      </div>
                       <span className="text-sm font-medium">{post.amenReactions?.length || 0}</span>
                     </button>
                   )}
@@ -408,21 +420,25 @@ const PostList: React.FC = () => {
                   {(post.type === 'prayer' || isPrayerWall) && (
                     <button
                       onClick={() => handlePray(post._id)}
-                      className={`flex items-center space-x-2 transition-colors ${post.prayedFor.includes(state.user!._id)
+                      className={`flex items-center space-x-2 transition-colors group ${post.prayedFor.includes(state.user!._id)
                         ? 'text-purple-600'
-                        : 'text-gray-500 hover:text-purple-600'
+                        : 'text-slate-500 hover:text-purple-600'
                         }`}
                     >
-                      <span className="text-sm">🙏</span>
+                      <div className={`p-2 rounded-full group-hover:bg-purple-50 transition-colors ${post.prayedFor.includes(state.user!._id) ? 'bg-purple-50' : ''}`}>
+                        <span className="text-lg leading-none">🙏</span>
+                      </div>
                       <span className="text-sm font-medium">{post.prayedFor.length} prayed</span>
                     </button>
                   )}
 
                   <button
                     onClick={() => toggleComments(post._id)}
-                    className="flex items-center space-x-2 text-gray-500 hover:text-blue-600 transition-colors"
+                    className={`flex items-center space-x-2 transition-colors group ${showComments[post._id] ? 'text-primary-600' : 'text-slate-500 hover:text-primary-600'}`}
                   >
-                    <MessageCircle className="w-5 h-5" />
+                    <div className={`p-2 rounded-full group-hover:bg-primary-50 transition-colors ${showComments[post._id] ? 'bg-primary-50' : ''}`}>
+                      <MessageCircle className="w-5 h-5" />
+                    </div>
                     <span className="text-sm font-medium">{post.comments.length}</span>
                   </button>
                 </div>
@@ -430,7 +446,7 @@ const PostList: React.FC = () => {
 
               {/* Comments Section */}
               {showComments[post._id] && (
-                <div className="border-t border-gray-100 bg-gray-50 p-6">
+                <div className="border-t border-slate-100 bg-slate-50/50 p-6">
                   {/* Add Comment */}
                   <div className="flex space-x-3 mb-6">
                     <div className="flex-shrink-0">
@@ -438,11 +454,11 @@ const PostList: React.FC = () => {
                         <img
                           src={state.user.profilePhoto}
                           alt={state.user.name}
-                          className="w-8 h-8 rounded-full object-cover"
+                          className="w-8 h-8 rounded-full object-cover border border-white shadow-sm"
                         />
                       ) : (
-                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                          <User className="w-4 h-4 text-blue-600" />
+                        <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center border border-white shadow-sm">
+                          <span className="text-primary-700 font-bold text-xs">{state.user?.name?.charAt(0)}</span>
                         </div>
                       )}
                     </div>
@@ -456,15 +472,17 @@ const PostList: React.FC = () => {
                           [post._id]: e.target.value
                         })}
                         onKeyPress={(e) => e.key === 'Enter' && handleComment(post._id)}
-                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="flex-1 px-4 py-2 bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all shadow-sm"
                       />
-                      <button
+                      <Button
+                        variant="primary"
+                        size="sm"
                         onClick={() => handleComment(post._id)}
                         disabled={!commentInputs[post._id]?.trim()}
-                        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="!px-3"
                       >
                         <Send className="w-4 h-4" />
-                      </button>
+                      </Button>
                     </div>
                   </div>
 
@@ -477,23 +495,23 @@ const PostList: React.FC = () => {
                             <img
                               src={comment.user.profilePhoto}
                               alt={comment.user.name || 'Unknown User'}
-                              className="w-8 h-8 rounded-full object-cover"
+                              className="w-8 h-8 rounded-full object-cover border border-white shadow-sm"
                             />
                           ) : (
-                            <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                              <User className="w-4 h-4 text-gray-500" />
+                            <div className="w-8 h-8 bg-slate-200 rounded-full flex items-center justify-center border border-white shadow-sm">
+                              <User className="w-4 h-4 text-slate-500" />
                             </div>
                           )}
                         </div>
                         <div className="flex-1">
-                          <div className="bg-white rounded-lg px-4 py-2 shadow-sm">
-                            <div className="flex items-center space-x-2 mb-1">
-                              <span className="font-medium text-sm text-gray-900">{comment.user?.name || 'Unknown User'}</span>
-                              <span className="text-xs text-gray-500">
+                          <div className="bg-white rounded-2xl rounded-tl-none px-4 py-3 shadow-sm border border-slate-100">
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="font-semibold text-sm text-slate-900">{comment.user?.name || 'Unknown User'}</span>
+                              <span className="text-xs text-slate-400">
                                 {comment.createdAt ? format(new Date(comment.createdAt), 'MMM d, h:mm a') : 'Unknown Date'}
                               </span>
                             </div>
-                            <p className="text-sm text-gray-700">{comment.content || 'No content available'}</p>
+                            <p className="text-sm text-slate-700 leading-relaxed">{comment.content || 'No content available'}</p>
                           </div>
                         </div>
                       </div>
@@ -501,29 +519,29 @@ const PostList: React.FC = () => {
                   </div>
                 </div>
               )}
-            </div>
+            </Card>
           ))}
 
           {posts.length === 0 && (
-            <div className="text-center py-12">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <MessageCircle className="w-8 h-8 text-gray-400" />
+            <div className="text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300">
+              <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <MessageCircle className="w-8 h-8 text-slate-400" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <h3 className="text-lg font-bold text-slate-900 mb-2">
                 {isPrayerWall ? 'No prayer requests yet' : 'No posts yet'}
               </h3>
-              <p className="text-gray-500 mb-6">
+              <p className="text-slate-500 mb-6 max-w-sm mx-auto">
                 {isPrayerWall
-                  ? 'Be the first to share a prayer request!'
-                  : 'Be the first to share with the fellowship!'
+                  ? 'Be the first to share a prayer request with the community!'
+                  : 'Be the first to share a testimony, announcement, or thought with the fellowship!'
                 }
               </p>
-              <button
+              <Button
+                variant="primary"
                 onClick={() => setShowCreateModal(true)}
-                className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors"
               >
                 {isPrayerWall ? 'Share Prayer Request' : 'Create First Post'}
-              </button>
+              </Button>
             </div>
           )}
         </div>

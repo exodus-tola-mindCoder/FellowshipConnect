@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 
 // Components
 import Layout from './components/Layout/Layout';
@@ -27,10 +28,10 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   
   if (state.isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-dark-900">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading MFM_CSF...</p>
+          <p className="text-gray-600 dark:text-gray-300">Loading MFM_CSF...</p>
         </div>
       </div>
     );
@@ -45,10 +46,10 @@ const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   
   if (state.isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-dark-900">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading MFM_CSF...</p>
+          <p className="text-gray-600 dark:text-gray-300">Loading MFM_CSF...</p>
         </div>
       </div>
     );
@@ -59,71 +60,73 @@ const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <div className="App min-h-screen bg-gray-50">
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/login" element={
-              <PublicRoute>
-                <Login />
-              </PublicRoute>
-            } />
-            <Route path="/register" element={
-              <PublicRoute>
-                <Register />
-              </PublicRoute>
-            } />
+    <ThemeProvider>
+      <AuthProvider>
+        <Router>
+          <div className="App min-h-screen bg-gray-50 dark:bg-dark-900 transition-colors duration-300">
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/login" element={
+                <PublicRoute>
+                  <Login />
+                </PublicRoute>
+              } />
+              <Route path="/register" element={
+                <PublicRoute>
+                  <Register />
+                </PublicRoute>
+              } />
+              
+              {/* Protected Routes */}
+              <Route path="/" element={
+                <ProtectedRoute>
+                  <Layout />
+                </ProtectedRoute>
+              }>
+                <Route index element={<Navigate to="/dashboard" />} />
+                <Route path="dashboard" element={<Dashboard />} />
+                <Route path="posts" element={<PostList />} />
+                <Route path="testimonies" element={<TestimonyArchive />} />
+                <Route path="prayer-wall" element={<PostList />} />
+                <Route path="celebrations" element={<CelebrationsPage />} />
+                <Route path="prayer-tracker" element={<PrayerTracker />} />
+                <Route path="events" element={<EventList />} />
+                <Route path="members" element={<MembersList />} />
+                <Route path="admin" element={<AdminDashboard />} />
+                <Route path="profile" element={<ProfilePage />} />
+                <Route path="notifications" element={<NotificationsPage />} />
+                <Route path="spiritual-tracker" element={<SpiritualTrackerPage />} />
+                <Route path="mentorship" element={<MentorshipRequestPage />} />
+                <Route path="mentorship-admin" element={<MentorshipLeaderDashboard />} />
+              </Route>
+            </Routes>
             
-            {/* Protected Routes */}
-            <Route path="/" element={
-              <ProtectedRoute>
-                <Layout />
-              </ProtectedRoute>
-            }>
-              <Route index element={<Navigate to="/dashboard" />} />
-              <Route path="dashboard" element={<Dashboard />} />
-              <Route path="posts" element={<PostList />} />
-              <Route path="testimonies" element={<TestimonyArchive />} />
-              <Route path="prayer-wall" element={<PostList />} />
-              <Route path="celebrations" element={<CelebrationsPage />} />
-              <Route path="prayer-tracker" element={<PrayerTracker />} />
-              <Route path="events" element={<EventList />} />
-              <Route path="members" element={<MembersList />} />
-              <Route path="admin" element={<AdminDashboard />} />
-              <Route path="profile" element={<ProfilePage />} />
-              <Route path="notifications" element={<NotificationsPage />} />
-              <Route path="spiritual-tracker" element={<SpiritualTrackerPage />} />
-              <Route path="mentorship" element={<MentorshipRequestPage />} />
-              <Route path="mentorship-admin" element={<MentorshipLeaderDashboard />} />
-            </Route>
-          </Routes>
-          
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 4000,
-              style: {
-                background: '#363636',
-                color: '#fff',
-                borderRadius: '12px',
-                padding: '16px',
-              },
-              success: {
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                duration: 4000,
                 style: {
-                  background: '#10B981',
+                  background: '#363636',
+                  color: '#fff',
+                  borderRadius: '12px',
+                  padding: '16px',
                 },
-              },
-              error: {
-                style: {
-                  background: '#EF4444',
+                success: {
+                  style: {
+                    background: '#10B981',
+                  },
                 },
-              },
-            }}
-          />
-        </div>
-      </Router>
-    </AuthProvider>
+                error: {
+                  style: {
+                    background: '#EF4444',
+                  },
+                },
+              }}
+            />
+          </div>
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 
