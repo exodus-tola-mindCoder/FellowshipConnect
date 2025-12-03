@@ -200,18 +200,18 @@ const PostList: React.FC = () => {
     : 'Share your heart with the community';
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 animate-fade-in-up">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 animate-fade-in-up">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8">
         <div>
-          <h1 className="text-3xl font-heading font-bold text-slate-900">{pageTitle}</h1>
-          <p className="text-slate-600 mt-2">{pageDescription}</p>
+          <h1 className="text-2xl sm:text-3xl font-heading font-bold text-slate-900">{pageTitle}</h1>
+          <p className="text-slate-600 mt-1 sm:mt-2 text-sm sm:text-base">{pageDescription}</p>
         </div>
         <Button
           variant="primary"
           onClick={() => setShowCreateModal(true)}
-          leftIcon={<Plus className="w-5 h-5" />}
-          className="shadow-lg shadow-primary-500/30"
+          leftIcon={<Plus className="w-4 h-4 sm:w-5 sm:h-5" />}
+          className="shadow-lg shadow-primary-500/30 w-full sm:w-auto text-sm sm:text-base"
         >
           {isPrayerWall ? 'Share Prayer Request' : 'Create Post'}
         </Button>
@@ -219,16 +219,19 @@ const PostList: React.FC = () => {
 
       {/* Filter */}
       {!isPrayerWall && (
-        <Card className="mb-8 p-4">
-          <div className="space-y-4">
-            <div className="flex items-center space-x-4 overflow-x-auto pb-2 scrollbar-hide">
-              <Filter className="w-5 h-5 text-slate-400 flex-shrink-0" />
-              <div className="flex space-x-2">
+        <Card className="mb-6 sm:mb-8 p-4 sm:p-6">
+          <div className="space-y-4 sm:space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
+              <div className="flex items-center space-x-2">
+                <Filter className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 flex-shrink-0" />
+                <span className="text-sm font-medium text-slate-700">Filter:</span>
+              </div>
+              <div className="flex flex-wrap gap-2 overflow-x-auto scrollbar-hide">
                 {filterOptions.map((option) => (
                   <button
                     key={option.value}
                     onClick={() => setFilteredType(option.value)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 whitespace-nowrap ${filteredType === option.value
+                    className={`px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 whitespace-nowrap ${filteredType === option.value
                       ? 'bg-primary-600 text-white shadow-md shadow-primary-500/20'
                       : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                       }`}
@@ -240,7 +243,7 @@ const PostList: React.FC = () => {
             </div>
 
             {/* Search, Category, Sort Controls */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
@@ -248,14 +251,14 @@ const PostList: React.FC = () => {
                   placeholder="Search posts..."
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                  className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all text-sm"
                 />
               </div>
 
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all text-sm"
               >
                 <option value="">All Categories</option>
                 <option value="Healing">Healing</option>
@@ -269,7 +272,7 @@ const PostList: React.FC = () => {
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value as any)}
-                className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all text-sm sm:col-span-2 lg:col-span-1"
               >
                 <option value="newest">Newest First</option>
                 <option value="oldest">Oldest First</option>
@@ -376,70 +379,72 @@ const PostList: React.FC = () => {
                 </div>
 
                 {/* Post Actions */}
-                <div className="flex items-center space-x-6 pt-4 border-t border-slate-100 pl-16">
-                  <button
-                    onClick={() => handleLike(post._id)}
-                    className={`flex items-center space-x-2 transition-colors group ${post.likes.includes(state.user!._id)
-                      ? 'text-red-500'
-                      : 'text-slate-500 hover:text-red-500'
-                      }`}
-                  >
-                    <div className={`p-2 rounded-full group-hover:bg-red-50 transition-colors ${post.likes.includes(state.user!._id) ? 'bg-red-50' : ''}`}>
-                      <Heart className={`w-5 h-5 ${post.likes.includes(state.user!._id) ? 'fill-current' : ''}`} />
-                    </div>
-                    <span className="text-sm font-medium">{post.likes.length}</span>
-                  </button>
-
-                  {post.type === 'testimony' && (
+                <div className="flex items-center justify-between pt-3 sm:pt-4 border-t border-slate-100 pl-12 sm:pl-16">
+                  <div className="flex items-center space-x-2 sm:space-x-4 sm:space-x-6">
                     <button
-                      onClick={async () => {
-                        try {
-                          const res = await axios.post(`/api/posts/${post._id}/amen`);
-                          setPosts(posts.map(p => p._id === post._id ? {
-                            ...p,
-                            amenReactions: p.amenReactions?.includes(state.user!._id)
-                              ? p.amenReactions!.filter(id => id !== state.user!._id)
-                              : [...(p.amenReactions || []), state.user!._id]
-                          } : p));
-                        } catch {
-                          toast.error('Failed to react');
-                        }
-                      }}
-                      className={`flex items-center space-x-2 transition-colors group ${post.amenReactions?.includes(state.user!._id)
-                        ? 'text-green-600'
-                        : 'text-slate-500 hover:text-green-600'
+                      onClick={() => handleLike(post._id)}
+                      className={`flex items-center space-x-1 sm:space-x-2 transition-colors group ${post.likes.includes(state.user!._id)
+                        ? 'text-red-500'
+                        : 'text-slate-500 hover:text-red-500'
                         }`}
                     >
-                      <div className={`px-3 py-1 rounded-full border group-hover:bg-green-50 transition-colors ${post.amenReactions?.includes(state.user!._id) ? 'bg-green-50 border-green-200' : 'border-slate-200'}`}>
-                        <span className="text-sm font-medium">Amen</span>
+                      <div className={`p-1.5 sm:p-2 rounded-full group-hover:bg-red-50 transition-colors ${post.likes.includes(state.user!._id) ? 'bg-red-50' : ''}`}>
+                        <Heart className={`w-4 h-4 sm:w-5 sm:h-5 ${post.likes.includes(state.user!._id) ? 'fill-current' : ''}`} />
                       </div>
-                      <span className="text-sm font-medium">{post.amenReactions?.length || 0}</span>
+                      <span className="text-xs sm:text-sm font-medium">{post.likes.length}</span>
                     </button>
-                  )}
 
-                  {(post.type === 'prayer' || isPrayerWall) && (
-                    <button
-                      onClick={() => handlePray(post._id)}
-                      className={`flex items-center space-x-2 transition-colors group ${post.prayedFor.includes(state.user!._id)
-                        ? 'text-purple-600'
-                        : 'text-slate-500 hover:text-purple-600'
-                        }`}
-                    >
-                      <div className={`p-2 rounded-full group-hover:bg-purple-50 transition-colors ${post.prayedFor.includes(state.user!._id) ? 'bg-purple-50' : ''}`}>
-                        <span className="text-lg leading-none">🙏</span>
-                      </div>
-                      <span className="text-sm font-medium">{post.prayedFor.length} prayed</span>
-                    </button>
-                  )}
+                    {post.type === 'testimony' && (
+                      <button
+                        onClick={async () => {
+                          try {
+                            const res = await axios.post(`/api/posts/${post._id}/amen`);
+                            setPosts(posts.map(p => p._id === post._id ? {
+                              ...p,
+                              amenReactions: p.amenReactions?.includes(state.user!._id)
+                                ? p.amenReactions!.filter(id => id !== state.user!._id)
+                                : [...(p.amenReactions || []), state.user!._id]
+                            } : p));
+                          } catch {
+                            toast.error('Failed to react');
+                          }
+                        }}
+                        className={`flex items-center space-x-1 sm:space-x-2 transition-colors group ${post.amenReactions?.includes(state.user!._id)
+                          ? 'text-green-600'
+                          : 'text-slate-500 hover:text-green-600'
+                          }`}
+                      >
+                        <div className={`px-2 sm:px-3 py-1 rounded-full border group-hover:bg-green-50 transition-colors ${post.amenReactions?.includes(state.user!._id) ? 'bg-green-50 border-green-200' : 'border-slate-200'}`}>
+                          <span className="text-xs sm:text-sm font-medium">Amen</span>
+                        </div>
+                        <span className="text-xs sm:text-sm font-medium">{post.amenReactions?.length || 0}</span>
+                      </button>
+                    )}
+
+                    {(post.type === 'prayer' || isPrayerWall) && (
+                      <button
+                        onClick={() => handlePray(post._id)}
+                        className={`flex items-center space-x-1 sm:space-x-2 transition-colors group ${post.prayedFor.includes(state.user!._id)
+                          ? 'text-purple-600'
+                          : 'text-slate-500 hover:text-purple-600'
+                          }`}
+                      >
+                        <div className={`p-1.5 sm:p-2 rounded-full group-hover:bg-purple-50 transition-colors ${post.prayedFor.includes(state.user!._id) ? 'bg-purple-50' : ''}`}>
+                          <span className="text-base sm:text-lg leading-none">🙏</span>
+                        </div>
+                        <span className="text-xs sm:text-sm font-medium">{post.prayedFor.length} prayed</span>
+                      </button>
+                    )}
+                  </div>
 
                   <button
                     onClick={() => toggleComments(post._id)}
-                    className={`flex items-center space-x-2 transition-colors group ${showComments[post._id] ? 'text-primary-600' : 'text-slate-500 hover:text-primary-600'}`}
+                    className={`flex items-center space-x-1 sm:space-x-2 transition-colors group ${showComments[post._id] ? 'text-primary-600' : 'text-slate-500 hover:text-primary-600'}`}
                   >
-                    <div className={`p-2 rounded-full group-hover:bg-primary-50 transition-colors ${showComments[post._id] ? 'bg-primary-50' : ''}`}>
-                      <MessageCircle className="w-5 h-5" />
+                    <div className={`p-1.5 sm:p-2 rounded-full group-hover:bg-primary-50 transition-colors ${showComments[post._id] ? 'bg-primary-50' : ''}`}>
+                      <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
-                    <span className="text-sm font-medium">{post.comments.length}</span>
+                    <span className="text-xs sm:text-sm font-medium">{post.comments.length}</span>
                   </button>
                 </div>
               </div>

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { 
-  Calendar, 
-  MapPin, 
-  Clock, 
-  Users, 
+import {
+  Calendar,
+  MapPin,
+  Clock,
+  Users,
   Plus,
   Filter,
   User,
@@ -76,7 +76,7 @@ const EventList: React.FC = () => {
         await axios.post(`/api/events/${eventId}/rsvp`);
         toast.success('RSVP confirmed!');
       }
-      
+
       fetchEvents();
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Failed to update RSVP');
@@ -122,8 +122,8 @@ const EventList: React.FC = () => {
     { value: 'other', label: 'Other' }
   ];
 
-  const filteredEvents = filteredType === 'all' 
-    ? events 
+  const filteredEvents = filteredType === 'all'
+    ? events
     : events.filter(event => event.eventType === filteredType);
 
   const canCreateEvent = state.user?.role === 'leader' || state.user?.role === 'admin';
@@ -132,37 +132,39 @@ const EventList: React.FC = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Fellowship Events</h1>
-          <p className="text-gray-600 mt-2">Stay connected with upcoming fellowship activities</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Fellowship Events</h1>
+          <p className="text-gray-600 mt-1 sm:mt-2 text-sm sm:text-base">Stay connected with upcoming fellowship activities</p>
         </div>
         {canCreateEvent && (
           <button
             onClick={() => setShowCreateModal(true)}
-            className="flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105"
+            className="flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 text-sm sm:text-base w-full sm:w-auto"
           >
-            <Plus className="w-5 h-5" />
+            <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
             <span>Create Event</span>
           </button>
         )}
       </div>
 
       {/* Filter */}
-      <div className="flex items-center space-x-4 mb-8">
-        <Filter className="w-5 h-5 text-gray-500" />
-        <div className="flex flex-wrap gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-6 sm:mb-8">
+        <div className="flex items-center space-x-2">
+          <Filter className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 flex-shrink-0" />
+          <span className="text-sm font-medium text-gray-700">Filter:</span>
+        </div>
+        <div className="flex flex-wrap gap-2 overflow-x-auto scrollbar-hide">
           {filterOptions.map((option) => (
             <button
               key={option.value}
               onClick={() => setFilteredType(option.value)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                filteredType === option.value
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
+              className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${filteredType === option.value
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
             >
               {option.label}
             </button>
@@ -203,12 +205,12 @@ const EventList: React.FC = () => {
                   </div>
                 )}
 
-                <div className="p-6">
+                <div className="p-4 sm:p-6">
                   {/* Event Header */}
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-2 mb-2">
-                        <span className={`px-3 py-1 text-xs font-medium rounded-full border ${getEventTypeColor(event.eventType)}`}>
+                  <div className="flex items-start justify-between mb-3 sm:mb-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2 mb-2">
+                        <span className={`px-2 sm:px-3 py-1 text-xs font-medium rounded-full border ${getEventTypeColor(event.eventType)}`}>
                           {event.eventType.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                         </span>
                         {isPastEvent && (
@@ -217,11 +219,11 @@ const EventList: React.FC = () => {
                           </span>
                         )}
                       </div>
-                      <h3 className="text-xl font-semibold text-gray-900 mb-2">{event.title}</h3>
+                      <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 line-clamp-2">{event.title}</h3>
                     </div>
-                    
+
                     {canManageEvent(event) && (
-                      <div className="flex space-x-2 ml-4">
+                      <div className="flex space-x-2 ml-2 sm:ml-4 flex-shrink-0">
                         <button
                           onClick={() => handleDeleteEvent(event._id)}
                           className="p-2 text-gray-400 hover:text-red-600 transition-colors"
@@ -233,24 +235,24 @@ const EventList: React.FC = () => {
                   </div>
 
                   {/* Event Details */}
-                  <div className="space-y-3 mb-6">
+                  <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
                     <div className="flex items-center text-gray-600">
-                      <Calendar className="w-4 h-4 mr-3 flex-shrink-0" />
-                      <span className="text-sm">
-                        {format(eventDate, 'EEEE, MMMM d, yyyy')}
+                      <Calendar className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                      <span className="text-xs sm:text-sm truncate">
+                        {format(eventDate, 'EEE, MMM d, yyyy')}
                       </span>
                     </div>
                     <div className="flex items-center text-gray-600">
-                      <Clock className="w-4 h-4 mr-3 flex-shrink-0" />
-                      <span className="text-sm">{event.time}</span>
+                      <Clock className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                      <span className="text-xs sm:text-sm">{event.time}</span>
                     </div>
                     <div className="flex items-center text-gray-600">
-                      <MapPin className="w-4 h-4 mr-3 flex-shrink-0" />
-                      <span className="text-sm">{event.location}</span>
+                      <MapPin className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                      <span className="text-xs sm:text-sm truncate">{event.location}</span>
                     </div>
                     <div className="flex items-center text-gray-600">
-                      <Users className="w-4 h-4 mr-3 flex-shrink-0" />
-                      <span className="text-sm">
+                      <Users className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                      <span className="text-xs sm:text-sm">
                         {event.attendees.length} attending
                         {event.maxAttendees && ` (${event.maxAttendees} max)`}
                       </span>
@@ -258,26 +260,26 @@ const EventList: React.FC = () => {
                   </div>
 
                   {/* Event Description */}
-                  <p className="text-gray-700 text-sm mb-6 line-clamp-3">
+                  <p className="text-gray-700 text-xs sm:text-sm mb-4 sm:mb-6 line-clamp-2 sm:line-clamp-3">
                     {event.description}
                   </p>
 
                   {/* Organizer */}
-                  <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-gray-100">
+                  <div className="flex items-center space-x-2 sm:space-x-3 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-gray-100">
                     {event.organizer.profilePhoto ? (
                       <img
                         src={event.organizer.profilePhoto}
                         alt={event.organizer.name}
-                        className="w-8 h-8 rounded-full object-cover"
+                        className="w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover flex-shrink-0"
                       />
                     ) : (
-                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                        <User className="w-4 h-4 text-blue-600" />
+                      <div className="w-6 h-6 sm:w-8 sm:h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                        <User className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600" />
                       </div>
                     )}
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">Organized by</p>
-                      <p className="text-sm text-gray-600">{event.organizer.name}</p>
+                    <div className="min-w-0">
+                      <p className="text-xs sm:text-sm font-medium text-gray-900">Organized by</p>
+                      <p className="text-xs sm:text-sm text-gray-600 truncate">{event.organizer.name}</p>
                     </div>
                   </div>
 
@@ -286,19 +288,18 @@ const EventList: React.FC = () => {
                     <button
                       onClick={() => handleRSVP(event._id)}
                       disabled={!hasRSVPed && isEventFull}
-                      className={`w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 ${
-                        hasRSVPed
-                          ? 'bg-green-100 text-green-800 hover:bg-green-200'
-                          : isEventFull
+                      className={`w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 ${hasRSVPed
+                        ? 'bg-green-100 text-green-800 hover:bg-green-200'
+                        : isEventFull
                           ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
                           : 'bg-blue-500 text-white hover:bg-blue-600 transform hover:scale-105'
-                      }`}
+                        }`}
                     >
-                      {hasRSVPed 
-                        ? '✓ You\'re attending' 
-                        : isEventFull 
-                        ? 'Event Full' 
-                        : 'RSVP to Attend'
+                      {hasRSVPed
+                        ? '✓ You\'re attending'
+                        : isEventFull
+                          ? 'Event Full'
+                          : 'RSVP to Attend'
                       }
                     </button>
                   )}
@@ -318,7 +319,7 @@ const EventList: React.FC = () => {
                                 title={attendee.user.name}
                               />
                             ) : (
-                              <div 
+                              <div
                                 className="w-8 h-8 bg-blue-100 rounded-full border-2 border-white flex items-center justify-center"
                                 title={attendee.user.name}
                               >
@@ -349,8 +350,8 @@ const EventList: React.FC = () => {
           </div>
           <h3 className="text-lg font-medium text-gray-900 mb-2">No events found</h3>
           <p className="text-gray-500 mb-6">
-            {filteredType === 'all' 
-              ? 'No events have been scheduled yet.' 
+            {filteredType === 'all'
+              ? 'No events have been scheduled yet.'
               : `No ${filteredType.replace('-', ' ')} events found.`
             }
           </p>

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { 
-  Users, 
-  Search, 
+import {
+  Users,
+  Search,
   Filter,
   User,
   Mail,
@@ -106,27 +106,27 @@ const MembersList: React.FC = () => {
   const uniqueFellowshipRoles = [...new Set(members.map(m => m.fellowshipRole))];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Fellowship Members</h1>
-        <p className="text-gray-600 mt-2">Connect with your fellowship community</p>
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Fellowship Members</h1>
+        <p className="text-gray-600 mt-1 sm:mt-2 text-sm sm:text-base">Connect with your fellowship community</p>
       </div>
 
       {/* Search and Filters */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 mb-6 sm:mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {/* Search */}
-          <div className="md:col-span-2">
+          <div className="sm:col-span-2 lg:col-span-2">
             <div className="relative">
               <input
                 type="text"
                 placeholder="Search members..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
               />
-              <Search className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" />
+              <Search className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 absolute left-3 top-3.5" />
             </div>
           </div>
 
@@ -135,7 +135,7 @@ const MembersList: React.FC = () => {
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
             >
               <option value="all">All Roles</option>
               <option value="member">Members</option>
@@ -149,7 +149,7 @@ const MembersList: React.FC = () => {
             <select
               value={fellowshipRoleFilter}
               onChange={(e) => setFellowshipRoleFilter(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
             >
               <option value="all">All Fellowship Roles</option>
               {uniqueFellowshipRoles.map(role => (
@@ -160,8 +160,8 @@ const MembersList: React.FC = () => {
         </div>
 
         {/* Results Count */}
-        <div className="mt-4 pt-4 border-t border-gray-100">
-          <p className="text-sm text-gray-600">
+        <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-100">
+          <p className="text-xs sm:text-sm text-gray-600">
             Showing {filteredMembers.length} of {members.length} members
           </p>
         </div>

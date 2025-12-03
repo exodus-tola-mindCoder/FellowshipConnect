@@ -121,14 +121,14 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8 animate-fade-in-up">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 animate-fade-in-up">
       {/* Welcome Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8">
         <div>
-          <h1 className="text-3xl font-heading font-bold text-slate-900">
+          <h1 className="text-2xl sm:text-3xl font-heading font-bold text-slate-900">
             {getGreeting()}, <span className="text-primary-600">{state.user?.name}</span>!
           </h1>
-          <p className="text-slate-600 mt-1">Here's what's happening in your fellowship today.</p>
+          <p className="text-slate-600 mt-1 text-sm sm:text-base">Here's what's happening in your fellowship today.</p>
         </div>
         <div className="flex gap-3">
           <Button
@@ -136,15 +136,16 @@ const Dashboard: React.FC = () => {
             size="sm"
             onClick={() => window.location.href = '/posts?create=true'}
             leftIcon={<BookOpen className="w-4 h-4" />}
+            className="w-full sm:w-auto text-sm"
           >
             Create Post
           </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
         {/* Main Content */}
-        <div className="lg:col-span-2 space-y-8">
+        <div className="lg:col-span-2 space-y-6 sm:space-y-8">
           {/* Daily Scripture */}
           <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-600 to-primary-800 text-white shadow-xl shadow-primary-500/20">
             {/* Background Pattern */}
@@ -194,9 +195,9 @@ const Dashboard: React.FC = () => {
           {/* Recent Posts */}
           <div className="space-y-4">
             <div className="flex items-center justify-between px-1">
-              <h2 className="text-xl font-heading font-bold text-slate-900">Recent Activity</h2>
-              <a href="/posts" className="text-sm font-medium text-primary-600 hover:text-primary-700 flex items-center group">
-                View all <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+              <h2 className="text-lg sm:text-xl font-heading font-bold text-slate-900">Recent Activity</h2>
+              <a href="/posts" className="text-xs sm:text-sm font-medium text-primary-600 hover:text-primary-700 flex items-center group">
+                View all <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1 group-hover:translate-x-1 transition-transform" />
               </a>
             </div>
 

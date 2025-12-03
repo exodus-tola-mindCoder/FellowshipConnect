@@ -7,15 +7,17 @@ import Button from '../common/Button';
 import Input from '../common/Input';
 
 const Register: React.FC = () => {
-  const [formData, setFormData] = useState({
+ const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
     confirmPassword: '',
-    fellowshipRole: 'Member'
+    fellowshipRole: 'Member',
+    inviteCode: ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showInviteCode, setShowInviteCode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const { register } = useAuth();
@@ -48,7 +50,9 @@ const Register: React.FC = () => {
         name: formData.name,
         email: formData.email,
         password: formData.password,
-        fellowshipRole: formData.fellowshipRole
+        fellowshipRole: formData.fellowshipRole,
+        inviteCode: formData.inviteCode || undefined
+
       });
       toast.success('Welcome to Fellowship Connect!');
       navigate('/dashboard');
@@ -171,6 +175,33 @@ const Register: React.FC = () => {
                 {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
             </div>
+
+            {/* Invite Code Toggle */}
+            <div className="flex items-center justify-between">
+              <button
+                type="button"
+                onClick={() => setShowInviteCode(!showInviteCode)}
+                className="text-sm text-primary-600 hover:text-primary-700 font-medium transition-colors"
+              >
+                {showInviteCode ? '− Hide' : '+ Have'} an invite code?
+              </button>
+            </div>
+            {/* Invite Code Field */}
+            {showInviteCode && (
+              <div className="animate-fade-in-up">
+                <Input
+                  label="Invite Code (Optional)"
+                  id="inviteCode"
+                  name="inviteCode"
+                  type="text"
+                  value={formData.inviteCode}
+                  onChange={handleChange}
+                  placeholder="Enter your invite code"
+                  helperText="Required for leadership roles"
+                />
+              </div>
+            )}
+
 
             <div className="pt-4">
               <Button

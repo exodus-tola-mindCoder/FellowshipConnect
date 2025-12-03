@@ -3,12 +3,16 @@ import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-interface User {
+export type UserRole = 'MEMBER' | 'FAMILY_LEADER' | 'TEAM_LEADER' | 'GENERAL_LEADER' | 'SUPER_ADMIN';
+
+export interface User {
   _id: string;
   id: string;
   name: string;
   email: string;
-  role: 'member' | 'leader' | 'admin';
+  role: UserRole;
+  ministry?: string;
+  familyId?: string;
   fellowshipRole: string;
   profilePhoto: string;
   bio?: string;
@@ -27,7 +31,13 @@ interface AuthContextType {
   register: (userData: any) => Promise<void>;
   logout: () => void;
   updateUser: (userData: Partial<User>) => void;
-  isAdmin: () => boolean;
+  hasRole: (role: UserRole) => boolean;
+  hasAnyRole: (roles: UserRole[]) => boolean;
+  isSuperAdmin: () => boolean;
+  isGeneralLeader: () => boolean;
+  isTeamLeader: () => boolean;
+  isFamilyLeader: () => boolean;
+  isMember: () => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -166,13 +176,36 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  // Add a utility function to check if the user is an admin
-  const isAdmin = () => {
-    return state.user?.role === 'admin';
+  // Role checking utility functions
+  const hasRole = (role: UserRole) => {
+    return state.user?.role === role;
   };
 
+  const hasAnyRole = (roles: UserRole[]) => {
+    return state.user ? roles.includes(state.user.role) : false;
+  };
+
+  const isSuperAdmin = () => hasRole('SUPER_ADMIN');
+  const isGeneralLeader = () => hasRole('GENERAL_LEADER');
+  const isTeamLeader = () => hasRole('TEAM_LEADER');
+  const isFamilyLeader = () => hasRole('FAMILY_LEADER');
+  const isMember = () => hasRole('MEMBER');
+
   return (
-    <AuthContext.Provider value={{ state, login, register, logout, updateUser, isAdmin }}>
+    <AuthContext.Provider value={{ 
+      state, 
+      login, 
+      register, 
+      logout, 
+      updateUser, 
+      hasRole,
+      hasAnyRole,
+      isSuperAdmin,
+      isGeneralLeader,
+      isTeamLeader,
+      isFamilyLeader,
+      isMember
+    }}>
       {children}
     </AuthContext.Provider>
   );

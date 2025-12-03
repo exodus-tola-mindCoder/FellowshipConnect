@@ -21,8 +21,17 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['member', 'leader', 'admin'],
-    default: 'member'
+    enum: ['MEMBER', 'FAMILY_LEADER', 'TEAM_LEADER', 'GENERAL_LEADER', 'SUPER_ADMIN'],
+    default: 'MEMBER'
+  },
+  ministry: {
+    type: String,
+    default: ''
+  },
+  familyId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Family',
+    default: null
   },
   bio: {
     type: String,

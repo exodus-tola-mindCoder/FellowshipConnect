@@ -19,6 +19,7 @@ import uploadRoutes from './routes/upload.js';
 import notificationRoutes from './routes/notifications.js';
 import mentorshipRoutes from './routes/mentorship.js';
 import prayerRoutes from './routes/prayers.js';
+import inviteCodeRoutes from './routes/inviteCodes.js';
 
 dotenv.config();
 
@@ -98,6 +99,7 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/mentorship', mentorshipRoutes);
 app.use('/api/prayers', prayerRoutes);
+app.use('/api/invite-codes', inviteCodeRoutes);
 
 // Serve static files from the React app build directory
 if (process.env.NODE_ENV === 'production') {

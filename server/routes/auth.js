@@ -1,6 +1,7 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+import InviteCode from '../models/InviteCode.js';
 import { authenticate } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -8,7 +9,7 @@ const router = express.Router();
 // Register
 router.post('/register', async (req, res) => {
   try {
-    const { name, email, password, role, fellowshipRole } = req.body;
+    const { name, email, password, fellowshipRole, inviteCode } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -16,16 +17,53 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ message: 'User already exists with this email' });
     }
 
+    let userRole = 'MEMBER';
+    let ministry = '';
+    let familyId = null;
+
+    // If invite code provided, validate and assign role
+    if (inviteCode) {
+      const invite = await InviteCode.findOne({ 
+        code: inviteCode.toUpperCase(), 
+        isActive: true,
+        usedBy: null
+      });
+
+      if (!invite) {
+        return res.status(400).json({ message: 'Invalid or expired invite code' });
+      }
+
+      // Check expiration
+      if (invite.expiresAt && new Date() > invite.expiresAt) {
+        return res.status(400).json({ message: 'Invite code has expired' });
+      }
+
+      // Assign role from invite code
+      userRole = invite.role;
+      ministry = invite.ministry || '';
+      familyId = invite.familyId || null;
+    }
+
     // Create new user
     const user = new User({
       name,
       email,
       password,
-      role: role || 'member',
+      role: userRole,
+      ministry,
+      familyId,
       fellowshipRole: fellowshipRole || 'Member'
     });
 
     await user.save();
+
+    // Mark invite code as used
+    if (inviteCode) {
+      await InviteCode.findOneAndUpdate(
+        { code: inviteCode.toUpperCase() },
+        { usedBy: user._id }
+      );
+    }
 
     // Generate JWT token
     const token = jwt.sign(
@@ -42,6 +80,8 @@ router.post('/register', async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        ministry: user.ministry,
+        familyId: user.familyId,
         fellowshipRole: user.fellowshipRole,
         profilePhoto: user.profilePhoto
       }
@@ -84,6 +124,8 @@ router.post('/login', async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        ministry: user.ministry,
+        familyId: user.familyId,
         fellowshipRole: user.fellowshipRole,
         profilePhoto: user.profilePhoto
       }
